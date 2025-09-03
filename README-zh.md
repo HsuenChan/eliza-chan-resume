@@ -1,0 +1,67 @@
+# 陳勗恩 (Eliza Chan)
+
+**資深前端工程師 | Vue.js, Angular, TypeScript**
+
+![訪客數](https://komarev.com/ghpvc/?username=elizachan&color=blue) | ![Made with Markdown](https://img.shields.io/badge/使用-Markdown-1f425f.svg)
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-陳勗恩-blue?logo=linkedin)](https://www.linkedin.com/in/勗恩-陳-a1b0ba19b) | [![GitHub](https://img.shields.io/badge/GitHub-HsuenChan-black?logo=github)](https://github.com/HsuenChan) | [英文版 README](./README.md)
+
+---
+
+## 👩‍💻 關於我
+擁有四年多 Vue.js 生態系開發經驗，熟悉模組化架構、元件設計、RWD 與網站效能優化。  
+曾擔任前端組長，具備流程制定、Code Review 與技術推動能力。  
+擅長跨部門協作與需求釐清，能獨立解決問題，也能提升團隊整體開發效率。  
+重視文件撰寫與知識傳承，能有效支援團隊運作與新人培訓。  
+
+---
+
+## 💼 工作經歷
+
+### 奧丁丁集團 英屬開曼群島商台灣子公司_歐簿客科技股份有限公司  
+**資深前端工程師** | 2023/08 - 至今
+
+- **旅宿官網前台與業務後台系統開發**：主要負責旅宿官網前台與內部業務處理後台開發，前台系統服務 超過2300多間旅宿，平均日總瀏覽量達 900 多次，後台支援與各種OTA訂單處理與房型管理、權限分級、合約建立及修改、訂單審核等功能。
+- **權限邏輯模組化與流程優化**：辨識並重構分散於各頁面的權限判斷邏輯，統整為統一管理模組，並搭配自製查詢介面，將權限查詢時間從原本平均 15 分鐘（需跨部門釐清）縮短至 1 分鐘內，成功提升稽核合規性與與後端溝通效率。
+- **非同步資料流重構**：重構原有 4 組重複的 API 非同步邏輯，統一錯誤處理與請求狀態管理機制，減少約 92% 冗餘 API 呼叫次數，並強化 UI 回饋一致性與穩定性。
+- **錯誤處理與用戶體驗改善**：整理歸類超過 30 種常見錯誤類型，建立標準化錯誤碼對應機制，強化訊息可讀與使用者理解。成功降低 QA 端約 30% 來自業務部的問題量，並促進後端錯誤格式標準化，提升前端處理容錯率 13%。
+- **文件與知識管理**：主動建立 3 份大型功能模組的 README.md 技術文件，系統性記錄元件依賴關係、命名規則與資料流邏輯，讓團隊在開發時可即時參照，大幅降低交接與維護溝通成本。另持續維護日常 5 項專案的開發文檔，包含新人入門指南與商業邏輯說明。
+- **網站效能優化 (SEO + Lighthouse)**：針對網站進行 SEO 與無障礙效能提升。導入 Schema.org 結構化資料，提升 SEO 成效 12%；依據 Lighthouse 指標優化 a11y 設計，整體效能評分提升 35.7%。
+
+---
+
+### 鼎羿科技有限公司  
+**前端組長（管理 3 人團隊）** | 2020/09 - 2023/01
+
+- **多貨幣遊戲平台開發**：開發反波膽足球遊戲畫面、會員儲值與提款流程、返水邏輯、帳號安全設計等完整模組。支援 20 多種語言與 10 種以上幣別（含虛擬貨幣），導入 2FA 驗證與第三方登入。
+- **技術選型與模組化架構設計**：主導新專案技術選型，考量團隊熟悉度與維護成本，導入 Vue 3 + Vite 技術組合。建立模組化架構與元件命名規則，提升整體一致性與擴展性。
+- **建立開發流程與協作規範**：制定 Git commit 與 PR 撰寫規範，要求清楚記錄修改目的與內容，成功改善協作混亂與合併衝突，顯著提升上版效率。
+- **優化打包流程**：分析效能瓶頸，主導將 Webpack 遷移至 Vite，重構打包與資源載入機制，頁面載入效能提升 72%，開發與測試等待時間大幅縮短。
+- **建置團隊文件與知識傳承**：撰寫開發指南與核心模組導讀文件，協助新進人員於兩週內掌握專案邏輯與流程，熟悉期縮短 45%，顯著提升團隊運作效率。
+- **任務配置與跨部門溝通**：協助 PM 拆解與調整 Sprint 任務，根據成員能力與學習方向分配工作，改善任務過載情況。每週統整進度並向主管回報，協助排除技術風險與提出技術選型建議，並多次獲頒 MVP 表揚。
+
+---
+
+## 🛠 技能專長
+
+- **前端基礎**：HTML5、CSS3、RWD、SASS/SCSS、Bootstrap、Ant Design Vue、Tailwind CSS、Element UI  
+- **JavaScript 與框架**：JavaScript (ES5/ES6+)、TypeScript、Vue.js / Vue 3、Nuxt.js、Vite、Vuex、Pinia  
+- **API 與資料處理**：RESTful API、GraphQL、Axios、fetch、async/await、Promise、i18n  
+- **開發工具與流程**：npm、yarn、pnpm、Storybook、Git、Git Flow、GitHub Actions (CI/CD)  
+- **動畫與互動**：CSS 動畫、Vue Transition  
+- **架構與跨平台**：元件化架構設計、移動端優化、瀏覽器兼容性調試
+
+![Vue.js](https://img.shields.io/badge/Vue.js-35495E?logo=vue.js&logoColor=4FC08D)  ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)  ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)  ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)  ![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)  ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white)  ![GraphQL](https://img.shields.io/badge/GraphQL-E10098?logo=graphql&logoColor=white)  ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=github-actions&logoColor=white)  
+
+
+---
+
+## 🎓 學歷
+**長庚大學 資訊管理學系 學士** | 2016/09 - 2020/06  
+
+---
+
+## 🌐 聯繫方式
+- Email: hsuenchan0108@gmail.com  
+- Phone: 0968456035  
+
