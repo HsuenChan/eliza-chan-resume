@@ -1,2 +1,60 @@
-# Bio
-My personal resume – Frontend Engineer (Vue, Angular, JavaScript, TypeScript, Vite, SEO, i18n)
+# 陳勗恩 (Eliza Chan)
+**Frontend Engineer / 資深前端工程師**  
+📞 0968456035 | ✉️ hsuenchan0108@gmail.com  
+
+---
+
+## 🎯 自我介紹
+擁有四年多 Vue.js 生態系開發經驗，熟悉模組化架構、元件設計、RWD 與網站效能優化。  
+曾擔任前端組長，具備流程制定、Code Review 與技術推動能力。  
+擅長跨部門協作與需求釐清，能獨立解決問題，也能提升團隊整體開發效率。  
+重視文件撰寫與知識傳承，能有效支援團隊運作與新人培訓。  
+
+---
+
+## 💼 工作經歷
+
+### 奧丁丁集團 英屬開曼群島商台灣子公司_歐簿客科技股份有限公司  
+**資深前端工程師** | 2023/08 - 至今
+
+- **旅宿官網前台與業務後台系統開發**：服務超過 2300 多間旅宿，平均日總瀏覽量 900+。後台支援 OTA 訂單處理、房型管理、權限分級、合約管理與訂單審核。
+- **權限邏輯模組化與流程優化**：將分散於各頁面的權限判斷統整為模組，查詢時間由 15 分鐘降至 1 分鐘內。
+- **非同步資料流重構**：整合重複 API 邏輯，減少 92% 冗餘呼叫，UI 體驗更穩定。
+- **錯誤處理與 UX 改善**：建立錯誤碼機制，QA 問題量降低 30%，容錯率提升 13%。
+- **文件與知識管理**：撰寫 3 份核心模組 README 與 5 項專案文件，降低交接與維護成本。
+- **網站效能優化 (SEO + Lighthouse)**：導入 Schema.org，SEO 成效提升 12%；a11y 與效能指標提升 35.7%。
+
+---
+
+### 鼎羿科技有限公司  
+**前端組長（管理 3 人團隊）** | 2020/09 - 2023/01
+
+- **多貨幣遊戲平台開發**：支援 20+ 語言與 10+ 幣別，導入 2FA 與第三方登入。  
+- **技術選型與模組化架構設計**：導入 Vue 3 + Vite，建立模組化架構與命名規範。  
+- **建立開發流程與協作規範**：制定 Git/PR 規範，改善合併衝突，上版效率提升。  
+- **優化打包流程**：Webpack → Vite 遷移，載入效能提升 72%。  
+- **文件與知識傳承**：新人熟悉期縮短 45%。  
+- **任務配置與跨部門溝通**：協助 PM 拆解 Sprint，風險控管，獲頒 MVP 表揚。  
+
+---
+
+## 🛠 技能專長
+
+- **前端基礎**：HTML5、CSS3、RWD、SASS/SCSS、Bootstrap、Ant Design Vue、Tailwind CSS、Element UI  
+- **JavaScript 與框架**：JavaScript (ES5/ES6+)、TypeScript、Vue.js / Vue 3、Nuxt.js、Vite、Vuex、Pinia  
+- **API 與資料處理**：RESTful API、GraphQL、Axios、fetch、async/await、Promise、i18n  
+- **開發工具與流程**：npm、yarn、pnpm、Storybook、Git、Git Flow、GitHub Actions (CI/CD)  
+- **動畫與互動**：CSS 動畫、Vue Transition  
+- **架構與跨平台**：元件化架構設計、移動端優化、瀏覽器兼容性調試  
+
+---
+
+## 🎓 學歷
+**長庚大學 資訊管理學系 學士** | 2016/09 - 2020/06  
+
+---
+
+## 🌐 聯繫方式
+- Email: hsuenchan0108@gmail.com  
+- Phone: 0968456035  
+
