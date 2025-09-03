@@ -73,12 +73,10 @@
 
 ---
 
-![Visitor Count](https://komarev.com/ghpvc/?username=elizachan&color=blue)
-![Made with Markdown](https://img.shields.io/badge/Made%20with-Markdown-1f425f.svg)
+## 🌐 聯繫方式
+- Email: hsuenchan0108@gmail.com  
 
 ---
 
-## 🌐 聯繫方式
-- Email: hsuenchan0108@gmail.com  
-- Phone: 0968456035  
-
+![Visitor Count](https://komarev.com/ghpvc/?username=elizachan&color=blue)
+![Made with Markdown](https://img.shields.io/badge/Made%20with-Markdown-1f425f.svg)
