@@ -23,7 +23,7 @@ Proactive in documentation and knowledge sharing, reducing onboarding time and e
 
 ## 💼 Work Experience
 
-### [OwlTing Group (OwlNest Tech)  ](https://www.owlting.com/owlnest/?lang=en)
+### [OwlTing Group (OwlNest Tech)  ](https://www.owlting.com/owlnest/?lang=en&l=en)
 **Senior Frontend Engineer** | 2023/08 – Present
 
 - **Hotel Website Frontend & Business Backend**: Built and maintained systems serving 2,300+ hotels with 900+ daily visits. Backend features include OTA order management, room type management, role-based access control, contract creation/editing, and order auditing.  
