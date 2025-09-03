@@ -1,10 +1,15 @@
 # 陳勗恩 (Eliza Chan)
 
-**資深前端工程師 | Vue.js, Angular, TypeScript**
+## 資深前端工程師 | Vue.js, Angular, TypeScript  
 
-![訪客數](https://komarev.com/ghpvc/?username=elizachan&color=blue) | ![Made with Markdown](https://img.shields.io/badge/使用-Markdown-1f425f.svg)
+![Role](https://img.shields.io/badge/Role-Senior%20Frontend%20Engineer-blue)
+![Specialty](https://img.shields.io/badge/Focus-Vue.js%20%7C%20TypeScript%20%7C%20Vite-brightgreen)
+![Location](https://img.shields.io/badge/Base-Taiwan-orange)
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-陳勗恩-blue?logo=linkedin)](https://www.linkedin.com/in/勗恩-陳-a1b0ba19b) | [![GitHub](https://img.shields.io/badge/GitHub-HsuenChan-black?logo=github)](https://github.com/HsuenChan) | [英文版 README](./README.md)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Eliza%20Chan-blue?logo=linkedin)](https://www.linkedin.com/in/勗恩-陳-a1b0ba19b)
+[![GitHub](https://img.shields.io/badge/GitHub-HsuenChan-black?logo=github)](https://github.com/HsuenChan)
+
+🌐 [English Version](./README.md) | [中文版](./README-zh.md)
 
 ---
 
@@ -51,7 +56,14 @@
 - **動畫與互動**：CSS 動畫、Vue Transition  
 - **架構與跨平台**：元件化架構設計、移動端優化、瀏覽器兼容性調試
 
-![Vue.js](https://img.shields.io/badge/Vue.js-35495E?logo=vue.js&logoColor=4FC08D)  ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)  ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)  ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)  ![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)  ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white)  ![GraphQL](https://img.shields.io/badge/GraphQL-E10098?logo=graphql&logoColor=white)  ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=github-actions&logoColor=white)  
+![Vue.js](https://img.shields.io/badge/Vue.js-35495E?logo=vue.js&logoColor=4FC08D)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white)
+![GraphQL](https://img.shields.io/badge/GraphQL-E10098?logo=graphql&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=github-actions&logoColor=white)  
 
 
 ---
