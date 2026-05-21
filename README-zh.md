@@ -18,6 +18,7 @@
 曾擔任前端組長，具備流程制定、Code Review 與技術推動能力。  
 擅長跨部門協作與需求釐清，能獨立解決問題，也能提升團隊整體開發效率。  
 重視文件撰寫與知識傳承，能有效支援團隊運作與新人培訓。  
+擅長將 AI 編碼工具（如 Claude Code）深度整合進日常開發流程，透過自製 skills、hooks 與持久化 memory 系統，自動化接票、i18n、PR 撰寫與 code review 等流程，同步提升個人與團隊產出。  
 
 ---
 
@@ -32,6 +33,7 @@
 - **錯誤處理與用戶體驗改善**：整理歸類超過 30 種常見錯誤類型，建立標準化錯誤碼對應機制，強化訊息可讀與使用者理解。成功降低 QA 端約 30% 來自業務部的問題量，並促進後端錯誤格式標準化，提升前端處理容錯率 13%。
 - **文件與知識管理**：主動建立 3 份大型功能模組的 README.md 技術文件，系統性記錄元件依賴關係、命名規則與資料流邏輯，讓團隊在開發時可即時參照，大幅降低交接與維護溝通成本。另持續維護日常 5 項專案的開發文檔，包含新人入門指南與商業邏輯說明。
 - **網站效能優化 (SEO + Lighthouse)**：針對網站進行 SEO 與無障礙效能提升。導入 Schema.org 結構化資料，提升 SEO 成效 12%；依據 Lighthouse 指標優化 a11y 設計，整體效能評分提升 35.7%。
+- **AI 輔助開發流程建置**：將 Claude Code 深度整合進團隊開發流程，自製 skills（接票、i18n 留言、PR 建立、code review）、hooks 與持久化 memory 系統，將 Jira 接票到 PR 建立的時間縮短約 25%，i18n 留言、PR 撰寫等重複作業時間降低約 40%，並提升 code review 一致性。
 
 ---
 
@@ -55,6 +57,7 @@
 - **開發工具與流程**：npm、yarn、pnpm、Storybook、Git、Git Flow、GitHub Actions (CI/CD)  
 - **動畫與互動**：CSS 動畫、Vue Transition  
 - **架構與跨平台**：元件化架構設計、移動端優化、瀏覽器兼容性調試
+- **AI 輔助開發**：Claude Code（自製 skills、hooks、MCP 整合、memory 系統）、Prompt Engineering、AI 驅動 code review、工作流自動化（Jira / GitHub 整合）
 
 ![Vue.js](https://img.shields.io/badge/Vue.js-35495E?logo=vue.js&logoColor=4FC08D)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
