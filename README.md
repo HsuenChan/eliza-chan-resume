@@ -77,6 +77,8 @@ Adept at integrating AI coding agents (e.g. Claude Code) into daily engineering 
 
 ## 🌐 Contact
 - Email: hsuenchan0108@gmail.com  
+- GitHub: [HsuenChan](https://github.com/HsuenChan)  
+- LinkedIn: [Eliza Chan](https://www.linkedin.com/in/勗恩-陳-a1b0ba19b)  
 
 ---
 

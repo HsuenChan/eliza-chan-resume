@@ -78,6 +78,8 @@
 
 ## 🌐 聯繫方式
 - Email: hsuenchan0108@gmail.com  
+- GitHub：[HsuenChan](https://github.com/HsuenChan)  
+- LinkedIn：[陳勗恩](https://www.linkedin.com/in/勗恩-陳-a1b0ba19b)  
 
 ---
 
