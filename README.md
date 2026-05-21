@@ -18,6 +18,7 @@ Frontend engineer with 4+ years of experience in the Vue.js ecosystem, modular a
 Previously served as a Frontend Team Lead, with expertise in workflow setup, code review, and driving technical improvements.  
 Strong in cross-team collaboration and requirements analysis, capable of solving problems independently while enhancing overall team efficiency.  
 Proactive in documentation and knowledge sharing, reducing onboarding time and ensuring sustainable team growth.  
+Adept at integrating AI coding agents (e.g. Claude Code) into daily engineering — built custom skills, hooks, and a persistent memory system to automate ticketing, i18n, PR, and code-review workflows, improving both personal and team productivity.  
 
 ---
 
@@ -32,6 +33,7 @@ Proactive in documentation and knowledge sharing, reducing onboarding time and e
 - **Error Handling & UX Improvements**: Standardized 30+ error types and codes, cutting QA issue reports by 30% and improving frontend fault tolerance by 13%.  
 - **Documentation & Knowledge Management**: Authored 3 module-level README files and maintained 5 project docs, covering dependencies, naming, and business logic. Greatly reduced handover and maintenance costs.  
 - **Performance Optimization (SEO + Lighthouse)**: Implemented Schema.org structured data (+12% SEO improvement) and improved accessibility, raising Lighthouse scores by 35.7%.  
+- **AI-Assisted Development Workflow**: Integrated Claude Code into the team's engineering workflow by authoring custom skills, hooks, and a persistent memory system that automate Jira ticket pickup, i18n key commenting, PR creation, and code review. Reduced ticket-to-PR turnaround by ~25% and cut repetitive workflow tasks (i18n logging, PR descriptions) by ~40%, while improving review consistency.  
 
 ---
 
@@ -55,6 +57,7 @@ Proactive in documentation and knowledge sharing, reducing onboarding time and e
 - **Workflow**: Git, Git Flow, GitHub Actions (CI/CD), Storybook  
 - **Animation & Interaction**: CSS Animation, Vue Transition  
 - **Architecture & Cross-platform**: Component-based design, mobile optimization, browser compatibility  
+- **AI-Assisted Development**: Claude Code (custom skills, hooks, MCP, memory system), Prompt Engineering, AI-driven code review, workflow automation (Jira / GitHub integration)  
 
 ![Vue.js](https://img.shields.io/badge/Vue.js-35495E?logo=vue.js&logoColor=4FC08D)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
