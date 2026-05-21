@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eliza Chan — Interactive Resume</title>
+<style>
+  :root {
+    --bg: #1e1e1e;
+    --bg-card: #181818;
+    --bg-card-hover: #232323;
+    --bg-sel: #3a3a3a;
+    --border: #383838;
+    --border-hover: #d97757;
+    --text: #f8f8f2;
+    --text-dim: #bbbbbb;
+    --text-faint: #888888;
+
+    --prompt: #9cdcfe;
+    --user: #569cd6;
+    --path: #bd93f9;
+
+    --active: #d97757;
+    --done: #50fa7b;
+    --err: #ff5555;
+
+    --code: #f1fa8c;
+    --link: #9cdcfe;
+    --select-purple: #bd93f9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
+  body {
+    font-family: "SF Mono", "JetBrains Mono", "Fira Code", Menlo, Consolas, "Liberation Mono", monospace;
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.45;
+    padding: 18px;
+    min-height: 100vh;
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+
+  /* Prompt line shared style */
+  .pl { color: var(--text-dim); user-select: none; }
+  .pl .user { color: var(--user); }
+  .pl .path { color: var(--path); }
+  .pl .prompt-sym { color: var(--prompt); margin: 0 6px; }
+  .pl .cmd { color: var(--text); user-select: text; }
+
+  /* Transcript */
+  #transcript { margin-bottom: 4px; }
+  .block { margin-bottom: 14px; }
+  .block .output { margin-top: 4px; }
+
+  /* Banner */
+  .banner {
+    color: var(--prompt);
+    font-size: 10px;
+    line-height: 1.15;
+    white-space: pre;
+    overflow-x: auto;
+    margin-bottom: 4px;
+  }
+  .subtitle { color: var(--text-faint); }
+  .subtitle .name { color: var(--text); font-weight: 700; }
+
+  /* Section title shown in command output */
+  .section-title-line {
+    color: var(--active);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+  .section-title-line::before { content: '▸ '; }
+
+  .section-body p { margin-bottom: 4px; }
+  .section-body ul {
+    list-style: none;
+    padding-left: 10px;
+    margin: 4px 0;
+  }
+  .section-body ul li {
+    position: relative;
+    padding-left: 14px;
+    margin-bottom: 2px;
+  }
+  .section-body ul li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    color: var(--text-faint);
+  }
+
+  /* Select list (one bullet selected at a time, detail expanded inline) */
+  .select-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  .select-list li {
+    position: relative;
+    padding: 3px 8px 3px 22px;
+    margin-bottom: 1px;
+    border-left: 2px solid transparent;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  .select-list li::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    color: var(--text-faint);
+  }
+  .select-list li .bullet-title {
+    color: var(--text-dim);
+    transition: color 0.05s;
+  }
+  .select-list li:hover .bullet-title { color: var(--text); }
+  .select-list li.current {
+    background: var(--bg-sel);
+    border-left-color: var(--active);
+  }
+  .select-list li.current::before {
+    content: '▸';
+    color: var(--active);
+  }
+  .select-list li.current .bullet-title {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .bullet-detail {
+    margin-top: 4px;
+    color: var(--text);
+    line-height: 1.55;
+    animation: detailFade 0.14s ease-out;
+  }
+  @keyframes detailFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-2px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Cards (jobs) */
+  .cards { display: flex; flex-direction: column; gap: 8px; }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--active);
+    border-radius: 4px;
+    padding: 10px 12px;
+    animation: fadeIn 0.2s ease-out;
+  }
+  .job-title {
+    color: var(--active);
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+  .job-meta { color: var(--text-dim); font-size: 11px; margin-bottom: 6px; }
+  .job-bullets { padding-left: 2px; }
+  .job-bullets .row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 2px;
+    padding: 2px 4px;
+    border-radius: 2px;
+    cursor: pointer;
+    border-left: 2px solid transparent;
+  }
+  .job-bullets .row .bullet-title { color: var(--text-dim); transition: color 0.1s; }
+  .job-bullets .row:hover .bullet-title { color: var(--text); }
+  .job-bullets .row.current {
+    background: var(--bg-sel);
+    border-left-color: var(--active);
+  }
+  .job-bullets .tree {
+    color: var(--text-faint);
+    user-select: none;
+    flex-shrink: 0;
+  }
+  .job-bullets .row.current .tree { color: var(--active); }
+  .job-bullets .row.current .bullet-title { color: var(--text); font-weight: 600; }
+  .job-bullets .row-content { flex: 1; word-break: break-word; }
+
+  /* Select hint */
+  .select-hint {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-faint);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .select-hint .progress { color: var(--text-dim); }
+  kbd {
+    display: inline-block;
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 3px;
+    padding: 0 5px;
+    color: var(--text-dim);
+    margin: 0 2px;
+    font: inherit;
+    font-size: 10px;
+  }
+
+  /* Help table */
+  .help-grid {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 2px 16px;
+  }
+  .help-cmd { color: var(--prompt); cursor: pointer; }
+  .help-cmd:hover { text-decoration: underline; }
+  .help-desc { color: var(--text-faint); }
+
+  /* Inline */
+  strong { color: var(--text); font-weight: 700; }
+  code {
+    color: var(--code);
+    background: rgba(241, 250, 140, 0.10);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+  }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Prompt input */
+  .prompt-block {
+    margin-top: 6px;
+    padding-top: 6px;
+    position: relative;
+  }
+  .post-boot {
+    opacity: 0;
+    transition: opacity 0.4s ease-out;
+    pointer-events: none;
+  }
+  body.booted .post-boot {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .input-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .input-mirror {
+    color: var(--text);
+    white-space: pre;
+    user-select: text;
+  }
+  .input-row input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: transparent;
+    caret-color: transparent;
+    font: inherit;
+    padding: 0;
+    margin: 0;
+  }
+  .cursor {
+    display: inline-block;
+    width: 7px;
+    height: 14px;
+    background: var(--text);
+    vertical-align: text-top;
+    animation: blink 1s steps(2) infinite;
+    margin-left: 2px;
+    flex-shrink: 0;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Slash menu — inline like terminal output, no scroll, no card */
+  .slash-menu {
+    margin-top: 6px;
+    display: none;
+  }
+  .slash-menu.show { display: block; }
+  .slash-menu .item {
+    padding: 1px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  .slash-menu .item .cmd-name {
+    color: var(--text-faint);
+    min-width: 110px;
+    transition: color 0.05s;
+  }
+  .slash-menu .item .cmd-desc {
+    color: var(--text-faint);
+    font-size: 12px;
+    transition: color 0.05s;
+  }
+  .slash-menu .item.active .cmd-name,
+  .slash-menu .item.active .cmd-desc {
+    color: var(--select-purple);
+  }
+  .slash-menu .menu-hint {
+    margin-top: 4px;
+    font-size: 10px;
+    color: var(--text-faint);
+  }
+
+  /* Status / error */
+  .err { color: var(--err); }
+  .loading { color: var(--text-faint); font-style: italic; }
+  .ok { color: var(--done); }
+
+  @media (max-width: 600px) {
+    body { font-size: 12px; padding: 12px; }
+    .banner { font-size: 7px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="transcript"></div>
+  <div class="prompt-block post-boot">
+    <div class="input-row pl">
+      <span class="user">eliza@resume</span>:<span class="path">~</span><span class="prompt-sym">$</span>
+      <span class="input-mirror" id="mirror"></span>
+      <span class="cursor"></span>
+      <input id="cmdline" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="command input" />
+    </div>
+    <div class="slash-menu" id="slash-menu"></div>
+  </div>
+</div>
+
+<script>
+const SOURCES = {
+  en: { url: './README.md' },
+  zh: { url: './README-zh.md' }
+};
+
+const BANNER = String.raw`
+ ███████╗██╗     ██╗███████╗ █████╗      ██████╗██╗  ██╗ █████╗ ███╗   ██╗
+ ██╔════╝██║     ██║╚══███╔╝██╔══██╗    ██╔════╝██║  ██║██╔══██╗████╗  ██║
+ █████╗  ██║     ██║  ███╔╝ ███████║    ██║     ███████║███████║██╔██╗ ██║
+ ██╔══╝  ██║     ██║ ███╔╝  ██╔══██║    ██║     ██╔══██║██╔══██║██║╚██╗██║
+ ███████╗███████╗██║███████╗██║  ██║    ╚██████╗██║  ██║██║  ██║██║ ╚████║
+ ╚══════╝╚══════╝╚═╝╚══════╝╚═╝  ╚═╝     ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝`;
+
+const COMMANDS_META = {
+  '/help':       { en: 'Show available commands',  zh: '顯示指令' },
+  '/banner':     { en: 'Show name banner',         zh: '顯示姓名 ASCII art' },
+  '/about':      { en: 'About me',                 zh: '關於我' },
+  '/experience': { en: 'Work experience',          zh: '工作經歷' },
+  '/skills':     { en: 'Skills & technologies',    zh: '技能專長' },
+  '/education':  { en: 'Education',                zh: '學歷' },
+  '/contact':    { en: 'Contact info',             zh: '聯絡方式' },
+  '/all':        { en: 'Show everything',          zh: '顯示全部' },
+  '/lang':       { en: 'Switch language (en|zh)',  zh: '切換語言 (en|zh)' },
+  '/clear':      { en: 'Clear the screen',         zh: '清空畫面' }
+};
+const COMMAND_NAMES = Object.keys(COMMANDS_META);
+
+const SECTION_MATCH = {
+  '/about':      { en: /About\s*Me/i,        zh: /關於我/ },
+  '/experience': { en: /Work\s*Experience/i, zh: /工作經歷/ },
+  '/skills':     { en: /Skills/i,            zh: /技能/ },
+  '/education':  { en: /Education/i,         zh: /學歷/ },
+  '/contact':    { en: /Contact/i,           zh: /聯繫|聯絡/ }
+};
+
+let currentLang = (localStorage.getItem('resume-lang') === 'zh') ? 'zh' : 'en';
+let parsedCache = {};
+let activeSelect = null; // { state: { currentIdx, total }, renderFn }
+
+const $transcript = document.getElementById('transcript');
+const $input = document.getElementById('cmdline');
+const $mirror = document.getElementById('mirror');
+const $slashMenu = document.getElementById('slash-menu');
+let acIdx = 0;
+let acMatches = [];
+
+// ---------- Markdown helpers ----------
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+function renderInline(text) {
+  text = escapeHtml(text);
+  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+  return text;
+}
+function isBadgeLine(line) {
+  return /^!\[[^\]]*\]\([^)]+\)/.test(line.trim());
+}
+function isLangSwitchLine(line) {
+  const t = line.trim();
+  return /English Version/.test(t) && /中文版/.test(t);
+}
+function cleanContent(content) {
+  return content.split('\n').filter(line => {
+    const t = line.trim();
+    if (t === '---') return false;
+    if (isBadgeLine(t)) return false;
+    if (isLangSwitchLine(t)) return false;
+    return true;
+  }).join('\n');
+}
+function parseHeading(md) {
+  const lines = md.split('\n');
+  let name = '', role = '';
+  for (const line of lines) {
+    if (!name && /^#\s+/.test(line)) name = line.replace(/^#\s+/, '').trim();
+    else if (name && !role && /^##\s+/.test(line)) {
+      role = line.replace(/^##\s+/, '').trim();
+      break;
+    }
+  }
+  return { name, role };
+}
+function parseSections(md) {
+  const headerParts = md.split(/\n---\n/);
+  const main = headerParts.length > 1 ? headerParts.slice(1).join('\n---\n') : md;
+  const sections = [];
+  const raw = main.split(/\n## /);
+  for (let i = 0; i < raw.length; i++) {
+    let chunk = raw[i];
+    if (i === 0) {
+      if (!/^##\s/.test(chunk)) continue;
+      chunk = chunk.replace(/^##\s/, '');
+    }
+    if (!chunk.trim()) continue;
+    const lines = chunk.split('\n');
+    const title = lines[0].trim();
+    const content = cleanContent(lines.slice(1).join('\n')).trim();
+    sections.push({ title, content });
+  }
+  return sections;
+}
+function parseJobs(content) {
+  const chunks = content.split(/\n### /);
+  const jobs = [];
+  for (let i = 0; i < chunks.length; i++) {
+    let c = chunks[i];
+    if (i === 0) {
+      if (!/^###\s/.test(c)) continue;
+      c = c.replace(/^###\s/, '');
+    }
+    if (!c.trim()) continue;
+    const lines = c.split('\n');
+    const titleLine = lines[0].trim();
+    const rest = lines.slice(1);
+    const bulletStart = rest.findIndex(l => /^- /.test(l));
+    const before = bulletStart === -1 ? rest : rest.slice(0, bulletStart);
+    const metaLine = before.map(l => l.trim()).filter(Boolean).join(' ');
+    const after = bulletStart === -1 ? [] : rest.slice(bulletStart);
+    const bullets = [];
+    let cur = null;
+    for (const line of after) {
+      if (/^- /.test(line)) {
+        if (cur) bullets.push(cur);
+        cur = { text: line.replace(/^- /, '').trim() };
+      } else if (cur && line.trim()) {
+        cur.text += ' ' + line.trim();
+      }
+    }
+    if (cur) bullets.push(cur);
+    jobs.push({ titleLine, metaLine, bullets });
+  }
+  return jobs;
+}
+function parseBulletList(content) {
+  const bullets = [];
+  let cur = null;
+  for (const line of content.split('\n')) {
+    if (/^- /.test(line)) {
+      if (cur) bullets.push(cur);
+      cur = line.replace(/^- /, '').trim();
+    } else if (line.trim() && cur !== null) {
+      cur += ' ' + line.trim();
+    }
+  }
+  if (cur) bullets.push(cur);
+  return bullets;
+}
+
+// ---------- Data ----------
+
+async function loadLang(lang) {
+  if (parsedCache[lang]) return parsedCache[lang];
+  const res = await fetch(SOURCES[lang].url + '?_=' + Date.now());
+  if (!res.ok) throw new Error('HTTP ' + res.status + ' loading ' + SOURCES[lang].url);
+  const md = await res.text();
+  parsedCache[lang] = {
+    heading: parseHeading(md),
+    sections: parseSections(md)
+  };
+  return parsedCache[lang];
+}
+function findSection(parsed, key) {
+  const rx = SECTION_MATCH[key]?.[currentLang];
+  if (!rx) return null;
+  return parsed.sections.find(s => rx.test(s.title));
+}
+
+// ---------- Transcript blocks ----------
+
+function appendBlock(promptCmd, outputHtml = '') {
+  const div = document.createElement('div');
+  div.className = 'block';
+  div.innerHTML = `
+    <div class="pl"><span class="user">eliza@resume</span>:<span class="path">~</span><span class="prompt-sym">$</span> <span class="cmd">${escapeHtml(promptCmd)}</span></div>
+    <div class="output">${outputHtml}</div>
+  `;
+  $transcript.appendChild(div);
+  scrollToBottom();
+  return div;
+}
+
+function scrollToBottom() {
+  requestAnimationFrame(() => {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  });
+}
+
+// ---------- Select logic ----------
+
+function splitBullet(text) {
+  // Match "**TITLE**：DETAIL" or "**TITLE**: DETAIL" (half or full-width colon).
+  const m = text.match(/^\*\*([^*]+)\*\*\s*[:：]\s*([\s\S]+)$/);
+  if (m) return { title: m[1].trim(), detail: m[2].trim(), hasDetail: true };
+  return { title: text.trim(), detail: '', hasDetail: false };
+}
+
+function makeSelectHint(state) {
+  const navLabel = currentLang === 'zh' ? '選擇' : 'navigate';
+  return `
+    <div class="select-hint">
+      <span class="progress">[${state.currentIdx + 1}/${state.total}]</span>
+      <span><kbd>↑</kbd><kbd>↓</kbd> ${escapeHtml(navLabel)}</span>
+    </div>
+  `;
+}
+
+function setActiveSelect(state, renderFn) {
+  activeSelect = { state, renderFn };
+}
+
+function selectNext() {
+  if (!activeSelect) return false;
+  if (activeSelect.state.currentIdx >= activeSelect.state.total - 1) return false;
+  activeSelect.state.currentIdx++;
+  activeSelect.renderFn();
+  return true;
+}
+function selectPrev() {
+  if (!activeSelect) return false;
+  if (activeSelect.state.currentIdx <= 0) return false;
+  activeSelect.state.currentIdx--;
+  activeSelect.renderFn();
+  return true;
+}
+
+function scrollCurrentIntoView(blockEl) {
+  requestAnimationFrame(() => {
+    const cur = blockEl.querySelector('.current');
+    if (!cur) return;
+    const rect = cur.getBoundingClientRect();
+    if (rect.top < 60 || rect.bottom > window.innerHeight - 100) {
+      cur.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
+}
+
+// ---------- Section renderers ----------
+
+function showBanner() {
+  const block = appendBlock('/banner');
+  const out = block.querySelector('.output');
+  let html = `<pre class="banner">${escapeHtml(BANNER)}</pre>`;
+  const h = parsedCache[currentLang]?.heading;
+  if (h) {
+    html += `<div class="subtitle"><span class="name">${escapeHtml(h.name)}</span>${h.role ? ' — ' + renderInline(h.role) : ''}</div>`;
+  }
+  out.innerHTML = html;
+}
+
+function showHelp() {
+  const lang = currentLang;
+  const rows = COMMAND_NAMES.map(c =>
+    `<div class="help-cmd" onclick="window.runFromUI('${c}')">${c}</div><div class="help-desc">${escapeHtml(COMMANDS_META[c][lang])}</div>`
+  ).join('');
+  const tip = lang === 'zh'
+    ? '提示：點上面的指令或在下方輸入。在 /skills 與 /experience 內用 ↑↓ 選擇 bullet，被選中的會展開詳細內容。Tab 補全。'
+    : 'Tip: click a command or type below. In /skills and /experience, use ↑↓ to highlight a bullet — its details expand inline. Tab completes.';
+  const block = appendBlock('/help',
+    `<div class="help-grid">${rows}</div><div style="color:var(--text-faint);margin-top:6px;font-size:11px;">${tip}</div>`
+  );
+}
+
+async function showAbout() {
+  const parsed = await loadLang(currentLang);
+  const section = findSection(parsed, '/about');
+  if (!section) return appendBlock('/about', '<span class="err">section not found</span>');
+  const hasBullets = /^- /m.test(section.content);
+  let body;
+  if (hasBullets) {
+    const bullets = parseBulletList(section.content);
+    body = `<div class="section-body"><ul>${bullets.map(b => `<li>${renderInline(b)}</li>`).join('')}</ul></div>`;
+  } else {
+    const paragraphs = section.content.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
+    body = `<div class="section-body">${paragraphs.map(p => `<p>${renderInline(p.replace(/\n/g, ' '))}</p>`).join('')}</div>`;
+  }
+  appendBlock('/about', `<div class="section-title-line">${escapeHtml(section.title)}</div>${body}`);
+}
+
+async function showSkills() {
+  const parsed = await loadLang(currentLang);
+  const section = findSection(parsed, '/skills');
+  if (!section) return appendBlock('/skills', '<span class="err">section not found</span>');
+  const bullets = parseBulletList(section.content).map(splitBullet);
+  const block = appendBlock('/skills',
+    `<div class="section-title-line">${escapeHtml(section.title)}</div>
+     <ul class="select-list"></ul>
+     <div class="hint-container"></div>`
+  );
+  const ul = block.querySelector('.select-list');
+  const hintBox = block.querySelector('.hint-container');
+  const state = { currentIdx: 0, total: bullets.length };
+
+  // Build list items once
+  ul.innerHTML = bullets.map((b, i) =>
+    `<li data-idx="${i}"><div class="bullet-title">${renderInline(b.title)}</div></li>`
+  ).join('');
+  ul.querySelectorAll('li').forEach(li => {
+    li.addEventListener('click', () => {
+      state.currentIdx = parseInt(li.dataset.idx, 10);
+      applySelection();
+    });
+  });
+
+  function applySelection() {
+    ul.querySelectorAll('li.current').forEach(l => {
+      l.classList.remove('current');
+      const d = l.querySelector('.bullet-detail');
+      if (d) d.remove();
+    });
+    const idx = state.currentIdx;
+    const li = ul.querySelector(`li[data-idx="${idx}"]`);
+    if (li) {
+      li.classList.add('current');
+      if (bullets[idx].hasDetail) {
+        const detail = document.createElement('div');
+        detail.className = 'bullet-detail';
+        detail.innerHTML = renderInline(bullets[idx].detail);
+        li.appendChild(detail);
+      }
+    }
+    hintBox.innerHTML = makeSelectHint(state);
+    scrollCurrentIntoView(block);
+  }
+
+  setActiveSelect(state, applySelection);
+  applySelection();
+}
+
+async function showExperience() {
+  const parsed = await loadLang(currentLang);
+  const section = findSection(parsed, '/experience');
+  if (!section) return appendBlock('/experience', '<span class="err">section not found</span>');
+  const jobs = parseJobs(section.content).map(j => ({
+    ...j,
+    bullets: j.bullets.map(b => splitBullet(b.text))
+  }));
+  const flatSeq = [];
+  jobs.forEach((j, ji) => j.bullets.forEach((_, bi) => flatSeq.push({ ji, bi })));
+
+  const block = appendBlock('/experience',
+    `<div class="section-title-line">${escapeHtml(section.title)}</div>
+     <div class="cards"></div>
+     <div class="hint-container"></div>`
+  );
+  const cardsEl = block.querySelector('.cards');
+  const hintBox = block.querySelector('.hint-container');
+  const state = { currentIdx: 0, total: flatSeq.length };
+
+  // Build cards + rows once
+  cardsEl.innerHTML = jobs.map((j, ji) => {
+    const rows = j.bullets.map((b, bi) => {
+      const isLast = bi === j.bullets.length - 1;
+      const tree = isLast ? '└─' : '├─';
+      const flatIdx = flatSeq.findIndex(x => x.ji === ji && x.bi === bi);
+      return `<div class="row" data-flat="${flatIdx}">
+        <span class="tree">${tree}</span>
+        <div class="row-content">
+          <div class="bullet-title">${renderInline(b.title)}</div>
+        </div>
+      </div>`;
+    }).join('');
+    return `
+      <div class="card">
+        <div class="job-title">${renderInline(j.titleLine)}</div>
+        ${j.metaLine ? `<div class="job-meta">${renderInline(j.metaLine)}</div>` : ''}
+        <div class="job-bullets">${rows}</div>
+      </div>`;
+  }).join('');
+
+  cardsEl.querySelectorAll('.row[data-flat]').forEach(row => {
+    row.addEventListener('click', () => {
+      state.currentIdx = parseInt(row.dataset.flat, 10);
+      applySelection();
+    });
+  });
+
+  function applySelection() {
+    cardsEl.querySelectorAll('.row.current').forEach(r => {
+      r.classList.remove('current');
+      const d = r.querySelector('.bullet-detail');
+      if (d) d.remove();
+    });
+    const idx = state.currentIdx;
+    const cur = flatSeq[idx];
+    const newRow = cardsEl.querySelector(`.row[data-flat="${idx}"]`);
+    if (newRow) {
+      newRow.classList.add('current');
+      const bullet = jobs[cur.ji].bullets[cur.bi];
+      if (bullet.hasDetail) {
+        const detail = document.createElement('div');
+        detail.className = 'bullet-detail';
+        detail.innerHTML = renderInline(bullet.detail);
+        newRow.querySelector('.row-content').appendChild(detail);
+      }
+    }
+    hintBox.innerHTML = makeSelectHint(state);
+    scrollCurrentIntoView(block);
+  }
+
+  setActiveSelect(state, applySelection);
+  applySelection();
+}
+
+async function showSimpleSection(key) {
+  const parsed = await loadLang(currentLang);
+  const section = findSection(parsed, key);
+  if (!section) return appendBlock(key, '<span class="err">section not found</span>');
+  const hasBullets = /^- /m.test(section.content);
+  let body;
+  if (hasBullets) {
+    const bullets = parseBulletList(section.content);
+    body = `<div class="section-body"><ul>${bullets.map(b => `<li>${renderInline(b)}</li>`).join('')}</ul></div>`;
+  } else {
+    const paragraphs = section.content.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
+    body = `<div class="section-body">${paragraphs.map(p => `<p>${renderInline(p.replace(/\n/g, ' '))}</p>`).join('')}</div>`;
+  }
+  appendBlock(key, `<div class="section-title-line">${escapeHtml(section.title)}</div>${body}`);
+}
+
+async function showAll() {
+  const parsed = await loadLang(currentLang);
+  let html = '';
+  for (const item of [{ key:'/about'}, { key:'/experience'}, { key:'/skills'}, { key:'/education'}, { key:'/contact'}]) {
+    const sec = findSection(parsed, item.key);
+    if (!sec) continue;
+    if (item.key === '/experience') {
+      const jobs = parseJobs(sec.content);
+      const cards = jobs.map(j => {
+        const rows = j.bullets.map((b, i) => {
+          const tree = i === j.bullets.length - 1 ? '└─' : '├─';
+          return `<div class="row"><span class="tree">${tree}</span><div class="row-content">${renderInline(b.text)}</div></div>`;
+        }).join('');
+        return `<div class="card"><div class="job-title">${renderInline(j.titleLine)}</div>${j.metaLine ? `<div class="job-meta">${renderInline(j.metaLine)}</div>` : ''}<div class="job-bullets">${rows}</div></div>`;
+      }).join('');
+      html += `<div class="section-title-line">${escapeHtml(sec.title)}</div><div class="cards">${cards}</div><div style="height:10px;"></div>`;
+    } else {
+      const hasBullets = /^- /m.test(sec.content);
+      let body;
+      if (hasBullets) {
+        const bullets = parseBulletList(sec.content);
+        body = `<ul>${bullets.map(b => `<li>${renderInline(b)}</li>`).join('')}</ul>`;
+      } else {
+        const paragraphs = sec.content.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
+        body = paragraphs.map(p => `<p>${renderInline(p.replace(/\n/g, ' '))}</p>`).join('');
+      }
+      html += `<div class="section-title-line">${escapeHtml(sec.title)}</div><div class="section-body">${body}</div><div style="height:10px;"></div>`;
+    }
+  }
+  appendBlock('/all', html);
+  activeSelect = null;
+}
+
+async function setLangArg(target) {
+  target = (target || '').toLowerCase();
+  if (target !== 'en' && target !== 'zh') {
+    appendBlock('/lang ' + (target || ''), '<span class="err">usage: /lang en|zh</span>');
+    return;
+  }
+  currentLang = target;
+  localStorage.setItem('resume-lang', target);
+  document.documentElement.lang = target === 'zh' ? 'zh-Hant' : 'en';
+  try {
+    await loadLang(target);
+  } catch (e) {
+    appendBlock('/lang ' + target, `<span class="err">${escapeHtml(e.message)}</span>`);
+    return;
+  }
+  const msg = target === 'zh'
+    ? '已切換為中文。輸入 /help 查看指令。'
+    : 'Switched to English. Type /help for commands.';
+  appendBlock('/lang ' + target, `<span class="ok">${escapeHtml(msg)}</span>`);
+  activeSelect = null;
+}
+
+function clearScreen() {
+  $transcript.innerHTML = '';
+  activeSelect = null;
+}
+
+// ---------- Command dispatcher ----------
+
+window.runFromUI = function (cmd) {
+  $input.value = '';
+  syncMirror();
+  runCmd(cmd);
+};
+
+function runCmd(raw) {
+  const cmd = raw.trim();
+  if (!cmd) return;
+  const [name, ...args] = cmd.split(/\s+/);
+  switch (name) {
+    case '/help':       showHelp(); break;
+    case '/banner':     showBanner(); break;
+    case '/about':      showAbout(); break;
+    case '/experience': showExperience(); break;
+    case '/skills':     showSkills(); break;
+    case '/education':  showSimpleSection('/education'); break;
+    case '/contact':    showSimpleSection('/contact'); break;
+    case '/all':        showAll(); break;
+    case '/lang':       setLangArg(args[0]); break;
+    case '/clear':      clearScreen(); break;
+    default:
+      appendBlock(cmd, `<span class="err">command not found: ${escapeHtml(name)}</span> · type <span class="help-cmd" onclick="window.runFromUI('/help')">/help</span>`);
+  }
+}
+
+// ---------- Input ----------
+
+function syncMirror() {
+  $mirror.textContent = $input.value;
+}
+
+function isMenuOpen() {
+  return $slashMenu.classList.contains('show');
+}
+
+function renderSlashMenu() {
+  const val = $input.value;
+  if (!val.startsWith('/')) {
+    $slashMenu.classList.remove('show');
+    acMatches = [];
+    return;
+  }
+  acMatches = COMMAND_NAMES.filter(c => c.startsWith(val));
+  if (!acMatches.length) {
+    $slashMenu.classList.remove('show');
+    return;
+  }
+  if (acIdx >= acMatches.length) acIdx = acMatches.length - 1;
+  if (acIdx < 0) acIdx = 0;
+  const lang = currentLang;
+  const items = acMatches.map((c, i) =>
+    `<div class="item ${i === acIdx ? 'active' : ''}" data-cmd="${c}" data-idx="${i}">
+      <span class="cmd-name">${c}</span>
+      <span class="cmd-desc">${escapeHtml(COMMANDS_META[c][lang])}</span>
+    </div>`
+  ).join('');
+  const hint = lang === 'zh'
+    ? '<kbd>↑↓</kbd> 選擇 · <kbd>Enter</kbd> 執行 · <kbd>Tab</kbd> 補全 · <kbd>Esc</kbd> 關閉'
+    : '<kbd>↑↓</kbd> select · <kbd>Enter</kbd> run · <kbd>Tab</kbd> complete · <kbd>Esc</kbd> dismiss';
+  $slashMenu.innerHTML = `${items}<div class="menu-hint">${hint}</div>`;
+  $slashMenu.classList.add('show');
+  $slashMenu.querySelectorAll('.item').forEach(el => {
+    el.addEventListener('click', () => runSlashFromMenu(el.dataset.cmd));
+    el.addEventListener('mouseenter', () => {
+      acIdx = parseInt(el.dataset.idx, 10);
+      updateActiveItem();
+    });
+  });
+}
+
+function updateActiveItem() {
+  $slashMenu.querySelectorAll('.item').forEach((el, i) => {
+    el.classList.toggle('active', i === acIdx);
+  });
+}
+
+function moveAcSelection(delta) {
+  if (!acMatches.length) return;
+  acIdx = (acIdx + delta + acMatches.length) % acMatches.length;
+  updateActiveItem();
+}
+
+function runSlashFromMenu(cmd) {
+  $input.value = '';
+  syncMirror();
+  $slashMenu.classList.remove('show');
+  acMatches = [];
+  runCmd(cmd);
+}
+
+$input.addEventListener('input', () => {
+  syncMirror();
+  acIdx = 0;
+  renderSlashMenu();
+});
+
+$input.addEventListener('keydown', (e) => {
+  const menuOpen = isMenuOpen();
+  if (e.key === 'Enter') {
+    if (menuOpen && acMatches.length) {
+      e.preventDefault();
+      runSlashFromMenu(acMatches[acIdx]);
+      return;
+    }
+    const v = $input.value.trim();
+    if (!v) return;
+    $input.value = '';
+    syncMirror();
+    runCmd(v);
+  } else if (e.key === 'Tab') {
+    e.preventDefault();
+    if (acMatches.length) {
+      let prefix = acMatches[0];
+      for (const m of acMatches) {
+        while (!m.startsWith(prefix)) prefix = prefix.slice(0, -1);
+      }
+      if (prefix.length > $input.value.length) {
+        $input.value = prefix;
+        syncMirror();
+        acIdx = 0;
+        renderSlashMenu();
+      }
+    }
+  } else if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (menuOpen) moveAcSelection(1);
+    else selectNext();
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (menuOpen) moveAcSelection(-1);
+    else selectPrev();
+  } else if (e.key === 'Escape') {
+    if (menuOpen) $slashMenu.classList.remove('show');
+    else { $input.value = ''; syncMirror(); }
+  }
+});
+
+document.addEventListener('click', (e) => {
+  if (e.target.closest('a, button, .slash-menu .item, .help-cmd, .select-list li, .job-bullets .row')) return;
+  $input.focus();
+});
+
+// ---------- Auto-type boot ----------
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function typeText(text, onChar, baseSpeed = 38) {
+  return new Promise(resolve => {
+    let i = 0;
+    (function step() {
+      if (i >= text.length) return resolve();
+      onChar(text[i]);
+      i++;
+      setTimeout(step, baseSpeed + Math.random() * 30);
+    })();
+  });
+}
+
+async function bootAutoType(cmd, runner) {
+  const div = document.createElement('div');
+  div.className = 'block';
+  div.innerHTML = `
+    <div class="pl"><span class="user">eliza@resume</span>:<span class="path">~</span><span class="prompt-sym">$</span> <span class="cmd auto-cmd"></span><span class="cursor auto-cursor"></span></div>
+  `;
+  $transcript.appendChild(div);
+  const cmdSpan = div.querySelector('.auto-cmd');
+  const cursor = div.querySelector('.auto-cursor');
+  await typeText(cmd, ch => { cmdSpan.textContent += ch; scrollToBottom(); });
+  await sleep(220);
+  cursor.remove();
+  // Remove the placeholder div and run the real command so it produces a normal block
+  div.remove();
+  runner();
+  await sleep(380);
+}
+
+// ---------- Boot ----------
+
+(async function boot() {
+  try {
+    await loadLang(currentLang);
+  } catch (e) {
+    appendBlock('boot', `<span class="err">Failed to load: ${escapeHtml(e.message)}</span><div style="color:var(--text-dim);margin-top:4px;">Open via HTTP, not file://. Try: <code>python3 -m http.server</code></div>`);
+    document.body.classList.add('booted');
+    return;
+  }
+  await bootAutoType('/banner', showBanner);
+  await bootAutoType('/help', showHelp);
+  document.body.classList.add('booted');
+  $input.focus();
+})();
+</script>
+</body>
+</html>
