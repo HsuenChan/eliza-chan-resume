@@ -381,6 +381,8 @@ const SECTION_MATCH = {
 let currentLang = (localStorage.getItem('resume-lang') === 'zh') ? 'zh' : 'en';
 let parsedCache = {};
 let activeSelect = null; // { state: { currentIdx, total }, renderFn }
+let cmdHistory = [];
+let historyIdx = -1; // -1 = not browsing history
 
 const $transcript = document.getElementById('transcript');
 const $input = document.getElementById('cmdline');
@@ -559,6 +561,28 @@ function setActiveSelect(state, renderFn) {
   activeSelect = { state, renderFn };
 }
 
+function historyPrev() {
+  if (!cmdHistory.length) return false;
+  if (historyIdx === -1) historyIdx = cmdHistory.length;
+  if (historyIdx <= 0) return false;
+  historyIdx--;
+  $input.value = cmdHistory[historyIdx];
+  syncMirror();
+  return true;
+}
+function historyNext() {
+  if (historyIdx === -1) return false;
+  historyIdx++;
+  if (historyIdx >= cmdHistory.length) {
+    historyIdx = -1;
+    $input.value = '';
+  } else {
+    $input.value = cmdHistory[historyIdx];
+  }
+  syncMirror();
+  return true;
+}
+
 function selectNext() {
   if (!activeSelect) return false;
   if (activeSelect.state.currentIdx >= activeSelect.state.total - 1) return false;
@@ -588,6 +612,7 @@ function scrollCurrentIntoView(blockEl) {
 // ---------- Section renderers ----------
 
 function showBanner() {
+  activeSelect = null;
   const block = appendBlock('/banner');
   const out = block.querySelector('.output');
   let html = `<pre class="banner">${escapeHtml(BANNER)}</pre>`;
@@ -599,6 +624,7 @@ function showBanner() {
 }
 
 function showHelp() {
+  activeSelect = null;
   const lang = currentLang;
   const rows = COMMAND_NAMES.map(c =>
     `<div class="help-cmd" onclick="window.runFromUI('${c}')">${c}</div><div class="help-desc">${escapeHtml(COMMANDS_META[c][lang])}</div>`
@@ -612,6 +638,7 @@ function showHelp() {
 }
 
 async function showAbout() {
+  activeSelect = null;
   const parsed = await loadLang(currentLang);
   const section = findSection(parsed, '/about');
   if (!section) return appendBlock('/about', '<span class="err">section not found</span>');
@@ -753,6 +780,7 @@ async function showExperience() {
 }
 
 async function showSimpleSection(key) {
+  activeSelect = null;
   const parsed = await loadLang(currentLang);
   const section = findSection(parsed, key);
   if (!section) return appendBlock(key, '<span class="err">section not found</span>');
@@ -839,6 +867,8 @@ window.runFromUI = function (cmd) {
 function runCmd(raw) {
   const cmd = raw.trim();
   if (!cmd) return;
+  if (cmdHistory[cmdHistory.length - 1] !== cmd) cmdHistory.push(cmd);
+  historyIdx = -1;
   const [name, ...args] = cmd.split(/\s+/);
   switch (name) {
     case '/help':       showHelp(); break;
@@ -922,6 +952,7 @@ function runSlashFromMenu(cmd) {
 }
 
 $input.addEventListener('input', () => {
+  historyIdx = -1;
   syncMirror();
   acIdx = 0;
   renderSlashMenu();
@@ -954,17 +985,20 @@ $input.addEventListener('keydown', (e) => {
         renderSlashMenu();
       }
     }
-  } else if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    if (menuOpen) moveAcSelection(1);
-    else selectNext();
   } else if (e.key === 'ArrowUp') {
     e.preventDefault();
-    if (menuOpen) moveAcSelection(-1);
-    else selectPrev();
+    if (historyIdx !== -1) historyPrev();
+    else if (menuOpen) moveAcSelection(-1);
+    else if (activeSelect) selectPrev();
+    else historyPrev();
+  } else if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (historyIdx !== -1) historyNext();
+    else if (menuOpen) moveAcSelection(1);
+    else if (activeSelect) selectNext();
   } else if (e.key === 'Escape') {
     if (menuOpen) $slashMenu.classList.remove('show');
-    else { $input.value = ''; syncMirror(); }
+    else { $input.value = ''; syncMirror(); historyIdx = -1; }
   }
 });
 
